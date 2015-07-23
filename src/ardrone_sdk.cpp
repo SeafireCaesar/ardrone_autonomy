@@ -105,12 +105,12 @@ extern "C"
     #include "ardrone_autonomy/snippet_ros_to_ardrone_config.h"
     // Now continue with the rest of the initialization
 
-    ardrone_tool_input_add(&teleop);
+    ardrone_tool_input_add(&teleop);		///sy adding input device 'teleop'
     uint8_t post_stages_index = 0;
 
-    // Alloc structs
+    // Alloc structs																			///sy params, driver_pre_stages, driver_post_stages, in_picture, out_picture
     specific_parameters_t* params = reinterpret_cast<specific_parameters_t*>(
-          vp_os_calloc(1, sizeof(specific_parameters_t)));
+          vp_os_calloc(1, sizeof(specific_parameters_t)));				///sy allocate 1 * sizeof() memory block
     specific_stages_t* driver_pre_stages = reinterpret_cast<specific_stages_t*>(
           vp_os_calloc(1, sizeof(specific_stages_t)));
     specific_stages_t* driver_post_stages = reinterpret_cast<specific_stages_t*>(
@@ -120,25 +120,25 @@ extern "C"
     vp_api_picture_t* out_picture = reinterpret_cast<vp_api_picture_t*>(
           vp_os_calloc(1, sizeof(vp_api_picture_t)));
 
-    in_picture->width          = _w;
+    in_picture->width          = _w;															///sy in_picture _w*_h
     in_picture->height         = _h;
 
-    out_picture->framerate     = 20;
+    out_picture->framerate     = 20;															///sy out_picture PIX_FMT_RGB24 _w*_h at 20Hz
     out_picture->format        = PIX_FMT_RGB24;
     out_picture->width         = _w;
     out_picture->height        = _h;
 
-    out_picture->y_buf         = reinterpret_cast<uint8_t*>(vp_os_malloc(_w * _h * 3));
+    out_picture->y_buf         = reinterpret_cast<uint8_t*>(vp_os_malloc(_w * _h * 3));			///sy out_picture  YCrCb colour space
     out_picture->cr_buf        = NULL;
     out_picture->cb_buf        = NULL;
 
-    out_picture->y_line_size   = _w * 3;
+    out_picture->y_line_size   = _w * 3;														///sy out_oicture
     out_picture->cb_line_size  = 0;
     out_picture->cr_line_size  = 0;
 
     // Alloc the lists
-    driver_pre_stages->stages_list  = NULL;
-    driver_post_stages->stages_list = reinterpret_cast<vp_api_io_stage_t*>(
+    driver_pre_stages->stages_list  = NULL;														///sy driver_pre_stages
+    driver_post_stages->stages_list = reinterpret_cast<vp_api_io_stage_t*>(						///sy driver_post_stages
           vp_os_calloc(NB_DRIVER_POST_STAGES, sizeof(vp_api_io_stage_t)));
 
     // Fill the POST-stages------------------------------------------------------
@@ -158,26 +158,26 @@ extern "C"
     driver_pre_stages->length  = 0;
     driver_post_stages->length = post_stages_index;
 
-    params->in_pic = in_picture;
+    params->in_pic = in_picture;								///sy params init
     params->out_pic = out_picture;
     params->pre_processing_stages_list  = driver_pre_stages;
     params->post_processing_stages_list = driver_post_stages;
     params->needSetPriority = 1;
     params->priority = 31;
     // Using the provided threaded pipeline implementation from SDK
-    START_THREAD(video_stage, params);
-    video_stage_init();
+    START_THREAD(video_stage, params);			///sy start_thread (name param) video_stage params
+    video_stage_init();							///sy video_stage_init() > video_stage_mutex, video_stage_condition variable
     if (ARDRONE_VERSION() >= 2)
     {
-      START_THREAD(video_recorder, NULL);
-      video_recorder_init();
-      video_recorder_resume_thread();
+      START_THREAD(video_recorder, NULL);		///sy start_thread (name param)	video_recorder
+      video_recorder_init();					///sy video_recorder_init() > video_recorder_mutex, video_recorder_condition
+      video_recorder_resume_thread();			///sy video_recorder_resume_thread()
     }
     // Threads do not start automatically
-    video_stage_resume_thread();
-    ardrone_tool_set_refresh_time(25);
+    video_stage_resume_thread();				///sy video_stage_resume_thread()
+    ardrone_tool_set_refresh_time(25);			///sy ArdroneToolRefreshTimeInUs = refresh_time_in_ms * 1000;
     // rosDriver->configure_drone();
-    START_THREAD(update_ros, ros_driver);
+    START_THREAD(update_ros, ros_driver); 		///sy start_thread (name param)	update_ros ros_driver
     return C_OK;
   }
 

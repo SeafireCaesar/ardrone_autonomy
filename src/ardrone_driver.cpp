@@ -134,7 +134,7 @@ void ARDroneDriver::run()
       if (((ros::Time::now() - startTime).toSec()) > 5.0)
       {
         is_inited = true;
-
+        ROS_INFO("*********************************");
         // Send the configuration to the drone
         ConfigureDrone();
 
@@ -814,10 +814,10 @@ int main(int argc, char** argv)
   else
   {
     // setup the application and user profiles for the driver
-    const char* appname = reinterpret_cast<const char*>(DRIVER_APPNAME);
-    const char* usrname = reinterpret_cast<const char*>(DRIVER_USERNAME);
-    ardrone_gen_appid(appname, "2.0", app_id, app_name, APPLI_NAME_SIZE);
-    ardrone_gen_usrid(usrname, usr_id, usr_name, USER_NAME_SIZE);
+    const char* appname = reinterpret_cast<const char*>(DRIVER_APPNAME);                ///sy DRIVER_APPNAME aka "ardrone_driver"
+    const char* usrname = reinterpret_cast<const char*>(DRIVER_USERNAME);               ///sy DRIVER_USERNAME aka "ardrone_driver"
+    ardrone_gen_appid(appname, "2.0", app_id, app_name, APPLI_NAME_SIZE);               ///sy /* @param appName[in], sdkVersion[in], appId[out], appDesc[out], descLen[in] */
+    ardrone_gen_usrid(usrname, usr_id, usr_name, USER_NAME_SIZE);                       ///sy these two functions are called again in ardrone_tool_init even if they are passed to the func
 
     // and finally initialize everything!
     // this will then call our sdk, which then starts the ::run() method of this file as an ardrone client thread

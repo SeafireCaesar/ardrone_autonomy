@@ -149,6 +149,9 @@ void CmdVelCallback(const geometry_msgs::TwistConstPtr &msg)
 {
   vp_os_mutex_lock(&twist_lock);
   // Main 4DOF
+  /**
+   * Cap the values between -1.0 and 1.0.
+   */
   cmd_vel.linear.x  = std::max(std::min(-msg->linear.x, 1.0), -1.0);
   cmd_vel.linear.y  = std::max(std::min(-msg->linear.y, 1.0), -1.0);
   cmd_vel.linear.z  = std::max(std::min(msg->linear.z, 1.0), -1.0);
@@ -227,19 +230,19 @@ C_RESULT update_teleop(void)
     int32_t combined_yaw = 0x00;
 
     // Auto hover detection based on ~0 values for 4DOF cmd_vel
-    int32_t hover = (int32_t)
+    int32_t hover = (int32_t)									///sy hover > ((int32_t)bool)
                     (
-                      (fabs(left_right) < _EPS) &&
+                      (fabs(left_right) < _EPS) &&				///sy float absolute
                       (fabs(front_back) < _EPS) &&
                       (fabs(up_down) < _EPS) &&
                       (fabs(turn) < _EPS) &&
                       // Set angular.x or angular.y to a non-zero value to disable entering hover
-                      // even when 4DOF control command is ~0
+                      // even when 4DOF control command is ~0				///sy
                       (fabs(cmd_vel.angular.x) < _EPS) &&
                       (fabs(cmd_vel.angular.y) < _EPS));
 
-    control_flag |= ((1 - hover) << 0);
-    control_flag |= (combined_yaw << 1);
+    control_flag |= ((1 - hover) << 0);				///sy ??left shift by 0 bit?  control_flag > (int32_t)
+    control_flag |= (combined_yaw << 1);			///sy or they keep different bits with the flags
     // ROS_INFO (">>> Control Flag: %d", control_flag);
 
     old_left_right = left_right;
@@ -249,7 +252,7 @@ C_RESULT update_teleop(void)
     // is_changed = true;
     if ((is_changed) || (hover))
     {
-      ardrone_tool_set_progressive_cmd(control_flag, left_right, front_back, up_down, turn, 0.0, 0.0);
+      ardrone_tool_set_progressive_cmd(control_flag, left_right, front_back, up_down, turn, 0.0, 0.0);				///sy change the input_state.pcmd class
     }
   }
   vp_os_mutex_unlock(&twist_lock);
