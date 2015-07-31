@@ -11,6 +11,7 @@
 
 #define SEND_PARAM_NUM(NAME,CATEGORY,DEFAULT)                                                          \
 {                                                                                                      \
+    ROS_INFO("CHECKE: "#CATEGORY"/"#NAME" = %f (DEFAULT = %f)", (float)ardrone_application_default_config.NAME, (float)DEFAULT);           \
     if(ardrone_application_default_config.NAME!=DEFAULT)                                               \
     {                                                                                                  \
         ROS_INFO("  SEND: "#CATEGORY"/"#NAME" = %f (DEFAULT = %f)", (float)ardrone_application_default_config.NAME, (float)DEFAULT);           \
@@ -20,6 +21,7 @@
 
 #define SEND_PARAM_STR(NAME,CATEGORY,DEFAULT)                                                          \
 {                                                                                                      \
+    ROS_INFO("CHECK: "#CATEGORY"/"#NAME" = %s (DEFAULT = %s)", ardrone_application_default_config.NAME, DEFAULT);           \
     if(0!=strcmp(ardrone_application_default_config.NAME,DEFAULT))                                     \
     {                                                                                                  \
         ROS_INFO("SEND: "#CATEGORY"/"#NAME" = %s (DEFAULT = %s)", ardrone_application_default_config.NAME, DEFAULT);           \

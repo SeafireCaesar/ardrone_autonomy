@@ -63,7 +63,7 @@ extern "C"
     vp_os_mutex_init(&video_lock);
     vp_os_mutex_init(&twist_lock);
 
-    ros_driver = new ARDroneDriver();
+    ros_driver = new ARDroneDriver();                           ///sy new instance of ARDroneDriver();
     int _w, _h;
 
     if (IS_ARDRONE2)
@@ -83,7 +83,7 @@ extern "C"
       printf("Something must be really wrong with the SDK!");
     }
 
-    ros::param::param("~looprate", looprate, 50);
+    ros::param::param("~looprate", looprate, 50);                                       ///sy ros::param::param (name val default) if name exist in param server return val
     ros::param::param("~realtime_navdata", realtime_navdata, false);
     ros::param::param("~realtime_video", realtime_video, false);
     if (!realtime_navdata) ROS_WARN("realtime navdata is off, odometry may be imprecise");
@@ -95,6 +95,12 @@ extern "C"
     {
       ardrone_application_default_config.max_bitrate = 4000;
     }
+    /*temp tag detection*/
+    ardrone_application_default_config.detect_type = CAD_TYPE_MULTIPLE_DETECTION_MODE;
+//    ardrone_application_default_config.enemy_colors = ARDRONE_DETECTION_COLOR_ORANGE_GREEN;
+    ardrone_application_default_config.detections_select_v= TAG_TYPE_BLACK_ROUNDEL;/* or TAG_TYPE_ROUNDEL*/
+
+    /*temp*/
 
     ardrone_application_default_config.navdata_options = NAVDATA_OPTION_FULL_MASK;
     ardrone_application_default_config.video_channel = ZAP_CHANNEL_HORI;

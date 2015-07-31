@@ -816,27 +816,27 @@ int main(int argc, char** argv)
     // setup the application and user profiles for the driver
     const char* appname = reinterpret_cast<const char*>(DRIVER_APPNAME);                ///sy DRIVER_APPNAME aka "ardrone_driver"
     const char* usrname = reinterpret_cast<const char*>(DRIVER_USERNAME);               ///sy DRIVER_USERNAME aka "ardrone_driver"
-    ardrone_gen_appid(appname, "2.0", app_id, app_name, APPLI_NAME_SIZE);               ///sy /* @param appName[in], sdkVersion[in], appId[out], appDesc[out], descLen[in] */
+    ardrone_gen_appid(appname, "2.0", app_id, app_name, APPLI_NAME_SIZE);               ///sy /* appName[in], sdkVersion[in], appId[out], appDesc[out], descLen[in] */
     ardrone_gen_usrid(usrname, usr_id, usr_name, USER_NAME_SIZE);                       ///sy these two functions are called again in ardrone_tool_init even if they are passed to the func
 
     // and finally initialize everything!
     // this will then call our sdk, which then starts the ::run() method of this file as an ardrone client thread
 
-    res = ardrone_tool_init(wifi_ardrone_ip,
-                            strlen(wifi_ardrone_ip),
-                            NULL,
+    res = ardrone_tool_init(wifi_ardrone_ip,                                    ///sy ardrone_tool_init(param_list)
+                            strlen(wifi_ardrone_ip),                            ///sy size_t n,
+                            NULL,                                               ///sy AT_CODEC_FUNCTIONS_PTRS *ptrs,
                             app_name,
                             usr_name,
-                            NULL,
-                            NULL,
-                            MAX_FLIGHT_STORING_SIZE,
-                            NULL);
+                            NULL,                                               ///sy const char *rootdir,
+                            NULL,                                               ///sy const char *flightdir,
+                            MAX_FLIGHT_STORING_SIZE,                            ///sy int flight_storing_size,
+                            NULL);                                              ///sy academy_download_new_media academy_download_new_media_func
 
-    while (SUCCEED(res) && ardrone_tool_exit() == FALSE)
+    while (SUCCEED(res) && ardrone_tool_exit() == FALSE)                        ///sy ardrone_tool_update() loop
     {
       res = ardrone_tool_update();
     }
-    res = ardrone_tool_shutdown();
+    res = ardrone_tool_shutdown();                                              ///sy ardrone_tool_shutdown()
   }
   return SUCCEED(res) ? 0 : -1;
 }
